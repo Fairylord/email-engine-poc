@@ -6,7 +6,7 @@ import org.redisson.config.Config;
 import org.redisson.api.RedissonClient;
 
 /**
- * Created by HUANGYE2 on 8/2/2017.
+ * Test use redisson to connect to redis sentinel
  */
 public class TestRedissonConn {
 
@@ -20,7 +20,7 @@ public class TestRedissonConn {
 
         System.out.println(redisson);
 
-        RBucket<Integer> b = redisson.getBucket("a");
+        RBucket<Integer> b = redisson.getBucket("b");
         System.out.println(b.get());
         b.set(999);
     }
