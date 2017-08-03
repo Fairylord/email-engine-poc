@@ -3,23 +3,23 @@ package test.redis;
 import org.redisson.Redisson;
 import org.redisson.api.RBucket;
 import org.redisson.api.RLock;
+import org.redisson.client.RedisException;
 import org.redisson.config.Config;
 import org.redisson.api.RedissonClient;
 
+import java.time.LocalDateTime;
 import java.util.concurrent.TimeUnit;
 
 /**
  * Test redisson Lock by multiple threads
- *
+ * <p>
  * Normal output:
- *
+ * <p>
  * Job-1| Try to get the Lock...
  * Job-2| Try to get the Lock...
  * Job-1| Get the Lock! Start to do something...
  * Job-2| Other thread get the Lock! T_T
  * Job-1| Finish the job! Free the Lock.
- *
- *
  */
 public class TestRedissonLock {
 
@@ -59,22 +59,26 @@ public class TestRedissonLock {
         public void run() {
             RLock lock = redisson.getLock("Job:1:Lock");
 
-            try {
-                System.out.println(this.threadName + "| Try to get the Lock...");
-                boolean res = lock.tryLock(3, 10, TimeUnit.SECONDS);
-                if(res) {
-                    System.out.println(this.threadName + "| Get the Lock! Start to do something...");
-                    Thread.sleep(5 * 1000);
-                    System.out.println(this.threadName + "| Finish the job! Free the Lock.");
-                    lock.unlock();
+            while (true) {
+                try {
+                    System.out.println(LocalDateTime.now().toString() + " | " + this.threadName + "| Try to get the Lock...");
+                    boolean res = lock.tryLock(3, 10, TimeUnit.SECONDS);
+                    if (res) {
+                        System.out.println(LocalDateTime.now().toString() + " | " + this.threadName + "| Get the Lock! Start to do something...");
+                        Thread.sleep(5 * 1000);
+                        System.out.println(LocalDateTime.now().toString() + " | " + this.threadName + "| Finish the job! Free the Lock.");
+                        lock.unlock();
+                        Thread.sleep(5 * 1000);
+                    } else {
+                        System.out.println(LocalDateTime.now().toString() + " | " + this.threadName + "| Other thread get the Lock! T_T");
+                        Thread.sleep(7 * 1000);
+                    }
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                } catch (RedisException e) {    // For case Redis master dies.
+                    System.out.println(LocalDateTime.now().toString() + " | " + threadName + "| Encounter RedisException !");
+                    e.printStackTrace();
                 }
-                else {
-                    System.out.println(this.threadName + "| Other thread get the Lock! T_T");
-                }
-
-
-            } catch (InterruptedException e) {
-                e.printStackTrace();
             }
         }
     }

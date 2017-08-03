@@ -4,6 +4,9 @@ import org.redisson.Redisson;
 import org.redisson.api.RBlockingQueue;
 import org.redisson.api.RLock;
 import org.redisson.api.RedissonClient;
+import org.redisson.client.RedisConnectionException;
+import org.redisson.client.RedisException;
+import org.redisson.client.RedisTimeoutException;
 import org.redisson.config.Config;
 
 import java.time.LocalDateTime;
@@ -11,11 +14,8 @@ import java.util.concurrent.TimeUnit;
 
 /**
  * Test producer-consumer on blocking queue by multiple threads
- *
+ * <p>
  * Normal output:
- *
- *
- *
  */
 public class TestOfferAndPollBlockingQueue {
 
@@ -60,14 +60,18 @@ public class TestOfferAndPollBlockingQueue {
         @Override
         public void run() {
             RBlockingQueue<String> queue = redisson.getBlockingQueue(queueName);
-            try {
-                while(true) {
+
+            while (true) {
+                try {
                     queue.offer(Integer.toString(counter++));
                     System.out.println(LocalDateTime.now().toString() + " | " + threadName + " | putted a msg into queue: " + (counter - 1));
-                    Thread.sleep(3 * 1000);
+                    Thread.sleep(2000);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                } catch (RedisException e) {    // For case Redis master dies.
+                    System.out.println(LocalDateTime.now().toString() + " | " + threadName + " | Encounter RedisException !");
+                    e.printStackTrace();
                 }
-            } catch (InterruptedException e) {
-                e.printStackTrace();
             }
         }
     }
@@ -88,7 +92,7 @@ public class TestOfferAndPollBlockingQueue {
         public void run() {
             RBlockingQueue<String> queue = redisson.getBlockingQueue(queueName);
             try {
-                while(true) {
+                while (true) {
                     System.out.println(LocalDateTime.now().toString() + " | " + threadName + " | Try to get msg from queue...");
                     String msg = queue.poll(5, TimeUnit.SECONDS);
                     if (null != msg) {
