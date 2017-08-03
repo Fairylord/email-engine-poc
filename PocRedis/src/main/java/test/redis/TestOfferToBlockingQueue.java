@@ -1,16 +1,17 @@
 package test.redis;
 
 import org.redisson.Redisson;
-import org.redisson.api.RBucket;
-import org.redisson.config.Config;
+import org.redisson.api.RBlockingQueue;
 import org.redisson.api.RedissonClient;
+import org.redisson.config.Config;
 
 /**
- * Test use redisson to connect to redis sentinel
+ * Test put msg into blocking queue.
  */
-public class TestRedissonConn {
+public class TestOfferToBlockingQueue {
 
     public static void main(String[] args) {
+
         Config config = new Config();
         config.useSentinelServers()
                 .setMasterName("master")
@@ -20,9 +21,14 @@ public class TestRedissonConn {
 
         System.out.println(redisson);
 
-        RBucket<Integer> b = redisson.getBucket("b");
-        System.out.println(b.get());
-        b.set(999);
+        RBlockingQueue<String> queue = redisson.getBlockingQueue("JobQueue");
+        queue.offer("Email-ID-5");
+
+        System.out.println("Putted msg to redis queue!");
+        System.out.println("Queue size: " + queue.size());
+        for(String msg : queue) {
+            System.out.println(msg);
+        }
 
         redisson.shutdown();
     }
