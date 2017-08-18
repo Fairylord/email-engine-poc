@@ -17,7 +17,24 @@ public class TestConn {
 
         Properties properties = getProperties();
 
+        try {
 
+            Session session = Session.getInstance(properties);
+
+            Store store = session.getStore("imap");
+
+            store.connect("hkgcas", 143, "oocldm\\ooclsagcsi", "jKpE8AKh");
+
+            Folder inbox = store.getFolder("INBOX");
+            inbox.open(Folder.READ_ONLY);
+
+            System.out.println(inbox);
+
+            inbox.close(true);
+            store.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
 
     }
 
