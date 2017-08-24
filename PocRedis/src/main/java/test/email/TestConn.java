@@ -1,6 +1,8 @@
 package test.email;
 
 
+import com.sun.mail.imap.IMAPMessage;
+
 import javax.mail.*;
 import javax.mail.search.FlagTerm;
 import javax.mail.search.MessageIDTerm;
@@ -73,8 +75,9 @@ public class TestConn {
             System.out.println("Search 1 mail by ID in " + (endTime - startTime) + " ms.");
             inbox.fetch(messagesByID, fp);
             for (Message message : messagesByID) {
-                System.out.println(message.getMessageNumber() + "  -  " +  message.getSubject());
-                System.out.println(message.getHeader("Message-Id")[0]);
+                IMAPMessage imapMsg = (IMAPMessage)message;
+                System.out.println(imapMsg.getMessageNumber() + "  -  " +  imapMsg.getSubject());
+                System.out.println(imapMsg.getMessageID());
             }
 
 
