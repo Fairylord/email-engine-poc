@@ -36,25 +36,25 @@ public class TestConn {
             /* Use a suitable FetchProfile */
             FetchProfile fp = new FetchProfile();
             fp.add(FetchProfile.Item.ENVELOPE);
-            fp.add(FetchProfile.Item.CONTENT_INFO);
+//            fp.add(FetchProfile.Item.CONTENT_INFO);
 
             // 3. Read All mails
-//            startTime = System.currentTimeMillis();
-////            // Read mails
-////            Message messages[] = inbox.search(new FlagTerm(new Flags(
-////                    Flags.Flag.SEEN), false));
-////            System.out.println("No. of Unread Messages : " + messages.length);
-////
+            startTime = System.currentTimeMillis();
+            // Read mails
+            Message messages[] = inbox.search(new FlagTerm(new Flags(
+                    Flags.Flag.SEEN), false));
+            System.out.println("No. of Unread Messages : " + messages.length);
+//
 //            Message messages[] = inbox.getMessages();
 //            System.out.println("No. of All Messages : " + inbox.getMessageCount());
-//
-//            inbox.fetch(messages, fp);
-//            endTime = System.currentTimeMillis();
-//            System.out.println("get All mail in " + (endTime - startTime) + " ms.");
-//
-//            for (Message message : messages) {
-//                System.out.println(message.getMessageNumber() + "  -  " +  message.getSubject());
-//            }
+
+            inbox.fetch(messages, fp);
+            endTime = System.currentTimeMillis();
+            System.out.println("get All mail in " + (endTime - startTime) + " ms.");
+
+            for (Message message : messages) {
+                System.out.println(message.getMessageNumber() + "  -  " +  message.getSubject());
+            }
 
 
             // 4. Read a mail by msgNo.
@@ -69,16 +69,16 @@ public class TestConn {
 
 
             // 5. Search a mail by ID
-            startTime = System.currentTimeMillis();
-            Message messagesByID[] = inbox.search(new MessageIDTerm("<511f41320d2c46fb977b804ae7fd38e1@HKGMAIL26.corp.oocl.com>"));
-            endTime = System.currentTimeMillis();
-            System.out.println("Search 1 mail by ID in " + (endTime - startTime) + " ms.");
-            inbox.fetch(messagesByID, fp);
-            for (Message message : messagesByID) {
-                IMAPMessage imapMsg = (IMAPMessage)message;
-                System.out.println(imapMsg.getMessageNumber() + "  -  " +  imapMsg.getSubject());
-                System.out.println(imapMsg.getMessageID());
-            }
+//            startTime = System.currentTimeMillis();
+//            Message messagesByID[] = inbox.search(new MessageIDTerm("<511f41320d2c46fb977b804ae7fd38e1@HKGMAIL26.corp.oocl.com>"));
+//            endTime = System.currentTimeMillis();
+//            System.out.println("Search 1 mail by ID in " + (endTime - startTime) + " ms.");
+//            inbox.fetch(messagesByID, fp);
+//            for (Message message : messagesByID) {
+//                IMAPMessage imapMsg = (IMAPMessage)message;
+//                System.out.println(imapMsg.getMessageNumber() + "  -  " +  imapMsg.getSubject());
+//                System.out.println(imapMsg.getMessageID());
+//            }
 
 
             inbox.close(true);
