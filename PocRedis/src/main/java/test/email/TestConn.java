@@ -4,8 +4,11 @@ package test.email;
 import com.sun.mail.imap.IMAPMessage;
 
 import javax.mail.*;
+import javax.mail.internet.MimeMessage;
 import javax.mail.search.FlagTerm;
 import javax.mail.search.MessageIDTerm;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.Properties;
 
 public class TestConn {
@@ -36,36 +39,54 @@ public class TestConn {
             /* Use a suitable FetchProfile */
             FetchProfile fp = new FetchProfile();
             fp.add(FetchProfile.Item.ENVELOPE);
-//            fp.add(FetchProfile.Item.CONTENT_INFO);
+            fp.add(FetchProfile.Item.CONTENT_INFO);
 
             // 3. Read All mails
-            startTime = System.currentTimeMillis();
-            // Read mails
-            Message messages[] = inbox.search(new FlagTerm(new Flags(
-                    Flags.Flag.SEEN), false));
-            System.out.println("No. of Unread Messages : " + messages.length);
+//            startTime = System.currentTimeMillis();
+//            // Read mails
+////            Message messages[] = inbox.search(new FlagTerm(new Flags(
+////                    Flags.Flag.SEEN), false));
+////            System.out.println("No. of Unread Messages : " + messages.length);
 //
 //            Message messages[] = inbox.getMessages();
 //            System.out.println("No. of All Messages : " + inbox.getMessageCount());
-
-            inbox.fetch(messages, fp);
-            endTime = System.currentTimeMillis();
-            System.out.println("get All mail in " + (endTime - startTime) + " ms.");
-
-            for (Message message : messages) {
-                System.out.println(message.getMessageNumber() + "  -  " +  message.getSubject());
-            }
+//
+//            inbox.fetch(messages, fp);
+//            endTime = System.currentTimeMillis();
+//            System.out.println("get All mail in " + (endTime - startTime) + " ms.");
+//
+//            for (Message message : messages) {
+//                IMAPMessage imapMsg = (IMAPMessage)message;
+//                System.out.println(message.getMessageNumber() + "  -  " +  message.getSubject() + "  -  " +  imapMsg.getMessageID());
+//            }
 
 
             // 4. Read a mail by msgNo.
-//            startTime = System.currentTimeMillis();
-//            Message lastMessage = inbox.getMessage(356);
-//            inbox.fetch(new Message[]{lastMessage}, fp);
-//            System.out.println(lastMessage.getSubject());
-//            System.out.println(lastMessage.getSentDate());
-//            System.out.println(lastMessage.getFlags());
-//            endTime = System.currentTimeMillis();
-//            System.out.println("get 1 mail in " + (endTime - startTime) + " ms.");
+            startTime = System.currentTimeMillis();
+            Message lastMessage = inbox.getMessage(366);
+            inbox.fetch(new Message[]{lastMessage}, fp);
+            System.out.println(lastMessage.getSubject());
+            System.out.println(lastMessage.getSentDate());
+            System.out.println(lastMessage.getFlags());
+
+
+
+            MimeMessage newmsg = new MimeMessage((MimeMessage) lastMessage);
+            Date dt = new Date();
+
+            SimpleDateFormat df = new SimpleDateFormat( "yyyy-MM-dd HH:mm:ss.S" );
+            dt = df.parse( "2017-09-06 11:11:11.1" );
+
+            newmsg.setSentDate(dt);
+            newmsg.setSubject("ABC - 2");
+            newmsg.setFlag(Flags.Flag.SEEN, false);
+            newmsg.saveChanges();
+            inbox.appendMessages(new Message[]{newmsg});
+
+            lastMessage.setFlag(Flags.Flag.DELETED,true);
+            inbox.expunge();
+            endTime = System.currentTimeMillis();
+            System.out.println("get 1 mail in " + (endTime - startTime) + " ms.");
 
 
             // 5. Search a mail by ID
@@ -94,7 +115,8 @@ public class TestConn {
         p.setProperty("mail.store.protocol", "imap");
         p.setProperty("mail.imap.timeout", "300000");// 5 mins
         p.setProperty("mail.imap.connectiontimeout", "600000");// 10 mins
-        p.setProperty("mail.imap.fetchsize", "256k");
+//        p.setProperty("mail.imap.fetchsize", "2097152");
+        p.setProperty("mail.imap.partialfetch", "false");
 
 //        p.put("mail.imap.ssl", true);
 //        p.put("mail.imap.starttls.enable", true);
