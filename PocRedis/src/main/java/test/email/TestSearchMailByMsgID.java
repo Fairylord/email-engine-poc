@@ -23,7 +23,7 @@ public class TestSearchMailByMsgID {
         String userName = "oocldm\\ooclsagcsi";
         String password = "jKpE8AKh";
 
-        boolean debugMode = false;   // ON/OFF Debug Mode
+        boolean debugMode = true;   // ON/OFF Debug Mode
 
         IMAPStore store = null;
         IMAPFolder inbox = null;
@@ -46,7 +46,7 @@ public class TestSearchMailByMsgID {
             System.out.println("No. of Messages : " + inbox.getMessageCount());
 
             // 3. Fetch mails
-            IMAPMessage mail = searchMailByMsgID(inbox, msgID ,fp);
+            IMAPMessage mail = searchMailByMsgID(inbox, msgID ,fp, store);
             if(mail != null) {
                 System.out.println(mail.getMessageNumber() + "  -  " +  mail.getSubject() + "  -  " +  mail.getMessageID());
             }
@@ -108,7 +108,7 @@ public class TestSearchMailByMsgID {
      * @return
      * @throws MessagingException
      */
-    public static IMAPMessage searchMailByMsgID(IMAPFolder folder, String msgID, FetchProfile fp) throws MessagingException {
+    public static IMAPMessage searchMailByMsgID(IMAPFolder folder, String msgID, FetchProfile fp, IMAPStore store) throws MessagingException {
         long startTime = System.currentTimeMillis();
         // Search by MsgID
         Message[] originalMails = folder.search(new MessageIDTerm(msgID));
@@ -117,6 +117,10 @@ public class TestSearchMailByMsgID {
             folder.fetch(imapMails, fp);
             long endTime = System.currentTimeMillis();
             System.out.println("Fetch " + imapMails.length + " mails in " + (endTime - startTime) + " ms.");
+
+
+            folder.moveMessages(imapMails, folder);
+
             return imapMails[0];
         }
         else {

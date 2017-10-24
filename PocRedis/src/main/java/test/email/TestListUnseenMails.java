@@ -22,7 +22,7 @@ public class TestListUnseenMails {
         String userName = "oocldm\\ooclsagcsi";
         String password = "jKpE8AKh";
 
-        boolean debugMode = false;   // ON/OFF Debug Mode
+        boolean debugMode = true;   // ON/OFF Debug Mode
 
         IMAPStore store = null;
         IMAPFolder inbox = null;
@@ -119,7 +119,7 @@ public class TestListUnseenMails {
         Properties p = System.getProperties();
         p.setProperty("mail.store.protocol", "imap");
         p.setProperty("mail.imap.timeout", "300000");// 5 mins
-        p.setProperty("mail.imap.connectiontimeout", "600000");// 10 mins
+        p.setProperty("mail.imap.connectiontimeout", "5000");// 10 mins
 //        p.setProperty("mail.imap.fetchsize", "2097152");  // No use if partialfetch = false
         p.setProperty("mail.imap.partialfetch", "false");
 

@@ -37,6 +37,16 @@
             <artifactId>javax.mail</artifactId>
             <version>1.5.6</version>
         </dependency>
+        <dependency>
+            <groupId>thirdparty_lib</groupId>
+            <artifactId>commons-pool2</artifactId>
+            <version>2.4.2</version>
+        </dependency>
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <version>4.7</version>
+        </dependency>
     </dependencies>
 
 
