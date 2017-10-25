@@ -21,7 +21,7 @@ public class Worker {
     public void work(int item) {
         System.out.println("[" + Thread.currentThread().getName() + "][" + this.name + "]: take item " + item);
         try {
-            Thread.sleep(2000L);
+            Thread.sleep(3000L);
         }
         catch (Exception e) {
             e.printStackTrace();

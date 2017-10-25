@@ -11,7 +11,7 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import junit.framework.Assert;
-import org.apache.commons.pool2.impl.GenericObjectPoolConfig;
+import org.apache.commons.pool2.impl.GenericKeyedObjectPoolConfig;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -25,13 +25,27 @@ public class WorkerPoolTest {
 
     @Before
     public void setUp() {
-        GenericObjectPoolConfig config = new GenericObjectPoolConfig();
-        config.setMinIdle(1);
-        config.setMaxIdle(3);
-        config.setMaxTotal(3);
+        GenericKeyedObjectPoolConfig config = new GenericKeyedObjectPoolConfig();
+
+        // Max element limitation
+        config.setMaxTotalPerKey(1);
+        config.setMaxIdlePerKey(1);
+        config.setMinIdlePerKey(0);
+
+        // When pool exhausted, block the thread
+        config.setMaxWaitMillis(2 * 60 * 1000L);
         config.setBlockWhenExhausted(true);
+
+        // Drop the idle elements after long time no one use
+        config.setMinEvictableIdleTimeMillis(4 * 60 * 1000L);
+        config.setTimeBetweenEvictionRunsMillis(1 * 60 * 1000L);
+
+        // Validate the element is still alive when take & return
         config.setTestOnBorrow(true);
         config.setTestOnReturn(true);
+
+        // First in First out
+        config.setFairness(true);
 
         this.pool = new WorkerPool(new WorkerFactory(), config);
     }
@@ -46,14 +60,18 @@ public class WorkerPoolTest {
                     @Override
                     public void run() {
                         Worker worker = null;
+                        String key = null;
                         try {
-                            worker = pool.borrowObject();
-                            worker.work(count.getAndIncrement());
+                            int step = count.getAndIncrement();
+                            key = ((step % 2 == 0) ? "Even" : "Odd");
+
+                            worker = pool.borrowObject(key);
+                            worker.work(step);
                         } catch (Exception e) {
                             e.printStackTrace(System.err);
                         } finally {
                             if (worker != null) {
-                                pool.returnObject(worker);
+                                pool.returnObject(key, worker);
                             }
                         }
                     }
