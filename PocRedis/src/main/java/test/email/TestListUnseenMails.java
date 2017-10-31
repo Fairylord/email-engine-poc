@@ -44,7 +44,7 @@ public class TestListUnseenMails {
             // 3. Fetch unseen mails
             IMAPMessage[] mails = getUnseenMails(inbox, fp);
             for (IMAPMessage mail : mails) {
-                System.out.println(mail.getMessageNumber() + "  -  " +  mail.getSubject() + "  -  " +  mail.getMessageID());
+                System.out.println(mail.getMessageNumber() + "  -  " +  mail.getSubject() + "  -  " +  mail.getMessageID() + " - " + inbox.getUID(mail));
             }
         } catch (Exception e) {
             e.printStackTrace();

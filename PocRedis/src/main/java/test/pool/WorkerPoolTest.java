@@ -33,16 +33,16 @@ public class WorkerPoolTest {
         config.setMinIdlePerKey(0);
 
         // When pool exhausted, block the thread
-        config.setMaxWaitMillis(2 * 60 * 1000L);
-        config.setBlockWhenExhausted(true);
+        config.setMaxWaitMillis(2 * 60 * 1000L);    // Max wait time to block the thread
+        config.setBlockWhenExhausted(true);     // Must be true to block the thread
 
         // Drop the idle elements after long time no one use
-        config.setMinEvictableIdleTimeMillis(4 * 60 * 1000L);
-        config.setTimeBetweenEvictionRunsMillis(1 * 60 * 1000L);
+        config.setMinEvictableIdleTimeMillis(4 * 60 * 1000L);   // How long the idle element will be dropped
+        config.setTimeBetweenEvictionRunsMillis(1 * 60 * 1000L);    // How long will a idle checking run once
 
-        // Validate the element is still alive when take & return
+        // Validate the element is still alive
         config.setTestOnBorrow(true);
-        config.setTestOnReturn(true);
+        config.setTestOnReturn(false);
 
         // First in First out
         config.setFairness(true);
