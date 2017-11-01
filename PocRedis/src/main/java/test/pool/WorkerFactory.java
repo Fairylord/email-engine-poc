@@ -16,7 +16,9 @@ public class WorkerFactory implements KeyedPooledObjectFactory<String, Worker> {
 
     @Override
     public PooledObject<Worker> makeObject(String key) throws Exception {
-        return new DefaultPooledObject<Worker>(new Worker(key + "--" + count.incrementAndGet()));
+        Thread.sleep(50);
+        int i = count.incrementAndGet();
+        return new DefaultPooledObject<Worker>(new Worker(key + "--" + i, i));
     }
 
     @Override

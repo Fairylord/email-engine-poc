@@ -1,4 +1,4 @@
-package test.pool;
+package test.pool.test;
 
 /**
  * Created by HUANGYE2 on 10/24/2017.
@@ -14,6 +14,9 @@ import junit.framework.Assert;
 import org.apache.commons.pool2.impl.GenericKeyedObjectPoolConfig;
 import org.junit.Before;
 import org.junit.Test;
+import test.pool.Worker;
+import test.pool.WorkerFactory;
+import test.pool.WorkerPool;
 
 import static org.junit.Assert.fail;
 

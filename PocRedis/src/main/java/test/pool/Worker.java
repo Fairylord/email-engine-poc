@@ -1,5 +1,7 @@
 package test.pool;
 
+import java.util.Random;
+
 /**
  * Created by HUANGYE2 on 10/24/2017.
  */
@@ -11,9 +13,12 @@ public class Worker {
 
     private int workedCount;
 
-    public Worker(String name) {
+    public Worker(String name, int key) {
         this.name = name;
-        this.alive = true;
+//        this.alive = true;
+//        this.alive = false;
+//        this.alive = new Random().nextBoolean();
+        this.alive = key == 2;
         this.workedCount = 0;
         System.out.println("[" + Thread.currentThread().getName() + "][" + this.name + "]: Worker created!");
     }
@@ -27,7 +32,7 @@ public class Worker {
             e.printStackTrace();
         }
         System.out.println("[" + Thread.currentThread().getName() + "][" + this.name + "]: finish item " + item);
-        this.alive = false;
+//        this.alive = false;
     }
 
     public void die() {
