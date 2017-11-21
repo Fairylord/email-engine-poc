@@ -54,6 +54,12 @@
             <version>1.8.8</version>
         </dependency>
 
+        <dependency>
+            <groupId>thirdparty_lib</groupId>
+            <artifactId>commons-io</artifactId>
+            <version>2.4</version>
+        </dependency>
+
     </dependencies>
 
 

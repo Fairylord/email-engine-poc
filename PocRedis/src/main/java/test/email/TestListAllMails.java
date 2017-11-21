@@ -30,6 +30,8 @@ public class TestListAllMails {
         FetchProfile fp = new FetchProfile();
         fp.add(FetchProfile.Item.ENVELOPE);
         fp.add(FetchProfile.Item.FLAGS);
+        fp.add(FetchProfile.Item.CONTENT_INFO);
+        fp.add(FetchProfile.Item.SIZE);
 
         try {
             // 1. Connect
@@ -42,8 +44,14 @@ public class TestListAllMails {
 
             // 3. Fetch all mails
             IMAPMessage[] mails = getAllMails(inbox, fp);
-            for (IMAPMessage mail : mails) {
-                System.out.println(mail.getMessageNumber() + "  -  " +  mail.getSubject() + "  -  " +  mail.getMessageID());
+//            for (IMAPMessage mail : mails) {
+            for(int i = 0; i < mails.length; i++) {
+
+                if(i == (mails.length - 1)) {
+                    System.out.println("xxx");
+                }
+
+                System.out.println(mails[i].getMessageNumber() + "  -  " +  mails[i].getSubject() + "  -  " +  mails[i].getMessageID());
             }
         } catch (Exception e) {
             e.printStackTrace();
